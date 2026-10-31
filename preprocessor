@@ -1,1 +1,116 @@
+#ifndef LOGGER_H
+#define LOGGER_H
 
+#include <stdio.h>
+
+// Define logging levels
+#define LOG_ERROR 1
+#define LOG_WARNING 2
+#define LOG_INFO 3
+#define LOG_DEBUG 4
+
+// Set default log level
+#ifndef LOG_LEVEL
+#define LOG_LEVEL LOG_DEBUG
+#endif
+
+// Enable debugging
+#ifndef ENABLE_DEBUG
+#define ENABLE_DEBUG 1
+#endif
+
+// Function declaration
+void log_message(const char *level,
+                 const char *file,
+                 int line,
+                 const char *func,
+                 const char *message);
+
+// Error message
+#if LOG_LEVEL >= LOG_ERROR
+#define ERROR_MSG(msg) \
+log_message("ERROR", __FILE__, __LINE__, __func__, msg)
+#else
+#define ERROR_MSG(msg)
+#endif
+
+// Warning message
+#if LOG_LEVEL >= LOG_WARNING
+#define WARNING_MSG(msg) \
+log_message("WARNING", __FILE__, __LINE__, __func__, msg)
+#else
+#define WARNING_MSG(msg)
+#endif
+
+// Information message
+#if LOG_LEVEL >= LOG_INFO
+#define INFO_MSG(msg) \
+log_message("INFO", __FILE__, __LINE__, __func__, msg)
+#else
+#define INFO_MSG(msg)
+#endif
+
+// Debug message
+#if ENABLE_DEBUG && LOG_LEVEL >= LOG_DEBUG
+#define DEBUG_MSG(msg) \
+log_message("DEBUG", __FILE__, __LINE__, __func__, msg)
+#else
+#define DEBUG_MSG(msg)
+#endif
+
+#endif
+#include <stdio.h>
+#include "logger.h"
+
+void log_message(const char *level,
+                 const char *file,
+                 int line,
+                 const char *func,
+                 const char *message)
+{
+    printf("[%s] ", level);
+
+    printf("File: %s | ", file);
+
+    printf("Line: %d | ", line);
+
+    printf("Function: %s | ", func);
+
+    printf("Message: %s\n", message);
+}
+#include <stdio.h>
+#include "logger.h"
+
+int main()
+{
+    int a, b, result;
+
+    INFO_MSG("Program started");
+
+    printf("Enter first number: ");
+    scanf("%d", &a);
+
+    printf("Enter second number: ");
+    scanf("%d", &b);
+
+    DEBUG_MSG("Checking entered values");
+
+    if (b == 0)
+    {
+        ERROR_MSG("Division by zero is not possible");
+    }
+    else
+    {
+        result = a / b;
+
+        printf("Division result = %d\n", result);
+
+        INFO_MSG("Division completed successfully");
+    }
+
+    WARNING_MSG("Program is going to end");
+
+    INFO_MSG("Program ended");
+
+    return 0;
+}
